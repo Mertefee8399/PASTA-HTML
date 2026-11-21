@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pastacı | Tatlı Dünyası</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- İkonlar -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="pasta.css">
+</head>
+<body>
+
+<header>
+    <a href="#anasayfa" class="logo">Pastacı<span>.</span></a>
+
+    <nav id="ana-menu">
+        <a href="#anasayfa" onclick="mobilMenuKapat()">ANA SAYFA</a>
+        <a href="#urunler" onclick="mobilMenuKapat()">ÜRÜNLER</a>
+        <a href="#hakkimizda" onclick="mobilMenuKapat()">HAKKIMIZDA</a>
+        <a href="#ozel-siparis" onclick="mobilMenuKapat()">ÖZEL SİPARİŞ</a>
+        <a href="#konum" onclick="mobilMenuKapat()">KONUM</a>
+    </nav>
+
+    <div class="header-sag">
+        <span id="canli-durum-rozet" class="durum-rozet" title="Çalışma Saatleri: 08:30 - 23:00">Kontrol ediliyor...</span>
+
+        <button class="sepet-btn" onclick="sepetAcKapat()" aria-label="Sepeti Aç">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span id="sepet-sayac">0</span>
+        </button>
+
+        <button class="hamburger-btn" id="hamburger-btn" onclick="mobilMenuAcKapat()" aria-label="Menüyü Aç">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<section class="hero" id="anasayfa">
+    <div class="hero-icerik">
+        <span class="hero-alt-baslik">El Yapımı &amp; Günlük Taze</span>
+        <h1>Hayallerinizdeki Tatlılar Burada!</h1>
+        <p>Her dilimde mutluluk, her lokmada eşsiz lezzet.</p>
+        <div class="hero-butonlar">
+            <a href="#urunler" class="hero-buton">Menüyü İncele</a>
+            <a href="#ozel-siparis" class="hero-buton-ikincil">Özel Pasta Tasarla</a>
+        </div>
+    </div>
+</section>
+
+<!-- Öne Çıkan Özellikler Şeridi -->
+<section class="ozellikler-seridi">
+    <div class="ozellik-kutu">
+        <i class="fa-solid fa-wheat-awn"></i>
+        <h4>%100 Doğal Malzeme</h4>
+        <p>Katkı maddesi olmadan gerçek Belçika çikolatası ve taze meyveler.</p>
+    </div>
+    <div class="ozellik-kutu">
+        <i class="fa-solid fa-fire-burner"></i>
+        <h4>Günlük Taze Üretim</h4>
+        <p>Tüm ürünlerimiz her sabah fırınımızdan taze olarak çıkar.</p>
+    </div>
+    <div class="ozellik-kutu">
+        <i class="fa-solid fa-motorcycle"></i>
+        <h4>Hızlı &amp; Özenli Teslimat</h4>
+        <p>Düzce içi soğuk zincir ve özel korumalı kutularla teslimat.</p>
+    </div>
+</section>
+
+<section class="urunler" id="urunler">
+
+    <div class="bolum-baslik">
+        <h2>Lezzetlerimiz</h2>
+        <p>Birbirinden güzel tatlılarımızı keşfedin, detaylarına bakın veya sepetinize ekleyin.</p>
+        <p class="fiyat-notu">Fiyatlar ürünün porsiyon veya adet bilgisine göre belirtilmiştir.</p>
+    </div>
+
+    <!-- Arama ve Sıralama Çubuğu -->
+    <div class="filtre-ust-cubuk">
+        <div class="arama-kutusu">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="urun-arama" placeholder="Tatlı ara... (Örn: Çilekli, Brownie, Kruvasan)">
+        </div>
+
+        <div class="siralama-kutusu">
+            <i class="fa-solid fa-arrow-up-wide-short"></i>
+            <select id="fiyat-sirala" onchange="urunleriFiltreleVeSirala()">
+                <option value="varsayilan">Sıralama: Önerilen</option>
+                <option value="artan">Fiyat: Düşükten Yükseğe</option>
+                <option value="azalan">Fiyat: Yüksekten Düşüğe</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- KATEGORİ SEÇİMLERİ -->
+    <div class="kategoriler" id="kategori-butonlari">
+        <button class="kat-btn aktif" data-kategori="tum">Tümü</button>
+        <button class="kat-btn" data-kategori="pastalar">Pastalar</button>
+        <button class="kat-btn" data-kategori="ekler">Ekler</button>
+        <button class="kat-btn" data-kategori="sutlu">Sütlü Tatlılar</button>
+        <button class="kat-btn" data-kategori="cikolatali">Çikolatalı</button>
+        <button class="kat-btn" data-kategori="meyveli">Meyveli</button>
+        <button class="kat-btn" data-kategori="kurabiye">Kurabiyeler</button>
+        <button class="kat-btn" data-kategori="hamur">Hamur İşleri</button>
+    </div>
+
+    <!-- Ürünler JS ile zenginleştirilerek render edilir -->
+    <div class="urun-container" id="urun-container"></div>
+    <p id="sonuc-bulunamadi" class="sonuc-bulunamadi" style="display: none;">Aradığınız kriterlere uygun tatlı bulunamadı.</p>
+</section>
+
+<!-- HAKKIMIZDA -->
+<section class="hakkimizda" id="hakkimizda">
+    <div class="bolum-baslik">
+        <h2>Hakkımızda</h2>
+    </div>
+    <p>
+        Pastacı olarak en güzel anlarınıza eşlik edecek tatlıları
+        özenle hazırlıyoruz. Kaliteli malzemeler ve taze ürünlerle
+        her gün mutluluk üretmeye devam ediyoruz. Düzce'deki iki şubemizde
+        sıcak bir kahve eşliğinde tatlı molası vermeniz için sizleri bekliyoruz.
+    </p>
+</section>
+
+<!-- ÖZEL SİPARİŞ & İLETİŞİM -->
+<section class="ozel-siparis" id="ozel-siparis">
+    <div class="bolum-baslik">
+        <h2>Özel Gün Pastası &amp; İletişim</h2>
+        <p>Doğum günü, nişan veya özel kutlamalarınız için bize ulaşın.</p>
+    </div>
+
+    <div class="iletisim-grid">
+        <div class="iletisim-bilgileri">
+            <h3>İletişim Kanallarımız</h3>
+            <p><i class="fa-solid fa-phone"></i> <strong>Telefon:</strong> 0555 000 00 00</p>
+            <p><i class="fa-solid fa-envelope"></i> <strong>E-posta:</strong> info@pastaci.com</p>
+            <p><i class="fa-brands fa-instagram"></i> <strong>Instagram:</strong> @pastaci</p>
+            <p><i class="fa-regular fa-clock"></i> <strong>Çalışma Saatleri:</strong> Her gün 08:30 - 23:00</p>
+        </div>
+
+        <form class="siparis-form" onsubmit="ozelSiparisGonder(event)">
+            <input type="text" id="musteri-ad" placeholder="Adınız Soyadınız" required>
+            <input type="tel" id="musteri-tel" placeholder="Telefon Numaranız" required>
+            <select id="pasta-tipi">
+                <option value="Doğum Günü Pastası">Doğum Günü Pastası</option>
+                <option value="Söz / Nişan Pastası">Söz / Nişan Pastası</option>
+                <option value="Toplu Kurabiye / İkramlık">Toplu Kurabiye / İkramlık</option>
+                <option value="Diğer">Diğer</option>
+            </select>
+            <textarea id="pasta-not" rows="3" placeholder="Kaç kişilik olsun? Aklınızdaki tasarım veya lezzet nedir?" required></textarea>
+            <button type="submit" class="hero-buton">WhatsApp ile Teklif Al</button>
+        </form>
+    </div>
+</section>
+
+<!-- KONUM -->
+<section class="konum" id="konum">
+    <div class="bolum-baslik">
+        <h2>Bizi Nerede Bulabilirsiniz?</h2>
+        <p>Size en yakın şubemizi ziyaret edin.</p>
+    </div>
+
+    <div class="konum-container">
+        <div class="konum-kart">
+            <div class="konum-baslik-satir">
+                <h3>Pastacı Bistro</h3>
+                <span class="sube-durum-etiket"></span>
+            </div>
+            <p>Kiremitocağı, İstanbul Caddesi No:101</p>
+            <p>81020 Düzce</p>
+            <iframe
+                src="https://www.google.com/maps?q=Kiremitocağı,+İstanbul+Caddesi+No:101,+Düzce&output=embed"
+                loading="lazy"
+                allowfullscreen
+                title="Pastacı Bistro haritası">
+            </iframe>
+            <a href="https://www.google.com/maps/search/?api=1&query=Kiremitocağı+İstanbul+Caddesi+No:101+Düzce"
+               target="_blank" rel="noopener">
+                <i class="fa-solid fa-location-dot"></i> Yol Tarifi Al
+            </a>
+        </div>
+
+        <div class="konum-kart">
+            <div class="konum-baslik-satir">
+                <h3>Pastacı Düzce Merkez</h3>
+                <span class="sube-durum-etiket"></span>
+            </div>
+            <p>Şerefiye, İstanbul Caddesi No:80</p>
+            <p>81010 Düzce</p>
+            <iframe
+                src="https://www.google.com/maps?q=Şerefiye,+İstanbul+Caddesi+No:80,+Düzce&output=embed"
+                loading="lazy"
+                allowfullscreen
+                title="Pastacı Düzce Merkez haritası">
+            </iframe>
+            <a href="https://www.google.com/maps/search/?api=1&query=Şerefiye+İstanbul+Caddesi+No:80+Düzce"
+               target="_blank" rel="noopener">
+                <i class="fa-solid fa-location-dot"></i> Yol Tarifi Al
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 Pastacı. Tüm hakları saklıdır.</p>
+</footer>
+
+<!-- ÜRÜN DETAY & ALERJEN MODALI -->
+<div class="modal-arkaplan" id="urun-modal-arkaplan" onclick="urunModalKapat()"></div>
+<div class="urun-modal" id="urun-modal" role="dialog" aria-modal="true" aria-labelledby="modal-baslik">
+    <button class="modal-kapat" onclick="urunModalKapat()" aria-label="Pencereyi Kapat">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div class="modal-icerik">
+        <div class="modal-gorsel">
+            <img id="modal-resim" src="" alt="">
+        </div>
+        <div class="modal-bilgi">
+            <span id="modal-rozet" class="modal-kategori-etiket"></span>
+            <h3 id="modal-baslik"></h3>
+            <p id="modal-aciklama" class="modal-aciklama"></p>
+
+            <div class="alerjen-bolumu">
+                <h4><i class="fa-solid fa-circle-exclamation"></i> Alerjen &amp; İçerik Bilgisi</h4>
+                <div id="modal-alerjenler" class="alerjen-listesi"></div>
+                <p id="modal-icerik-not" class="icerik-not"></p>
+            </div>
+
+            <div class="modal-alt">
+                <span id="modal-fiyat" class="modal-fiyat"></span>
+                <button id="modal-sepete-ekle" class="hero-buton">
+                    <i class="fa-solid fa-bag-shopping"></i> Sepete Ekle
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- YAN SEPET PANELİ (DRAWER) -->
+<div class="sepet-arkaplan" id="sepet-arkaplan" onclick="sepetAcKapat()"></div>
+<aside class="sepet-panel" id="sepet-panel">
+    <div class="sepet-baslik">
+        <h3>Sipariş Sepetiniz</h3>
+        <button onclick="sepetAcKapat()" class="kapat-btn" aria-label="Sepeti Kapat"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sepet-icerik" id="sepet-icerik">
+        <p class="bos-sepet">Sepetiniz şu an boş. Lezzetli tatlılarımızdan eklemeye başlayın!</p>
+    </div>
+    <div class="sepet-alt">
+        <div class="toplam-satir">
+            <span>Toplam Tutar:</span>
+            <strong id="sepet-toplam">0 ₺</strong>
+        </div>
+        <button class="whatsapp-siparis-btn" onclick="whatsappSiparisVer()">
+            <i class="fa-brands fa-whatsapp"></i> WhatsApp ile Sipariş Ver
+        </button>
+    </div>
+</aside>
+
+<!-- SAYFA BAŞINA DÖN BUTONU -->
+<button id="yukari-cik-btn" class="yukari-cik-btn" onclick="sayfaBasinaDon()" aria-label="Sayfa Başına Dön" title="Sayfa Başına Dön">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- TOAST BİLDİRİM -->
+<div id="toast" class="toast">Ürün sepete eklendi!</div>
+
+<script>
+    const URUNLER = [
+        {
+            id: 1,
+            ad: "Çikolata Rüyası",
+            kategori: "pastalar",
+            kategoriAd: "Pastalar",
+            fiyat: 1250,
+            rozet: "Çok Satan",
+            rozetTip: "populer",
+            resim: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600",
+            aciklama: "Yoğun çikolatalı, yumuşacık yaş pasta. 4-6 kişilik.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta", "Soya"],
+            icerikNot: "Bitter ve sütlü Belçika çikolatası, yumuşak kakaolu pandispanya ve ipeksi çikolata ganaj."
+        },
+        {
+            id: 2,
+            ad: "Çilek Rüyası",
+            kategori: "pastalar",
+            kategoriAd: "Pastalar",
+            fiyat: 1300,
+            resim: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600",
+            aciklama: "Taze çileklerle hazırlanan özel yaş pasta. 4-6 kişilik.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Günlük seçilmiş taze çilekler, hafif pastacı kreması ve vanilyalı pandispanya."
+        },
+        {
+            id: 3,
+            ad: "Vanilya Bahçesi",
+            kategori: "pastalar",
+            kategoriAd: "Pastalar",
+            fiyat: 1150,
+            resim: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600",
+            aciklama: "Hafif vanilya kremalı özel yaş pasta. 4-6 kişilik.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Gerçek vanilya çubuğu aromalı hafif krema ve taze mevsim dokunuşları."
+        },
+        {
+            id: 4,
+            ad: "Çikolatalı Ekler",
+            kategori: "ekler",
+            kategoriAd: "Ekler",
+            fiyat: 180,
+            sepetAd: "Çikolatalı Ekler (4 Adet)",
+            resim: "https://images.unsplash.com/photo-1623334044303-241021148842?w=600",
+            aciklama: "Çikolata kaplamalı, krema dolgulu ekler. 4 adet.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "İçi yoğun sütlü krema dolu pataşu hamuru ve parlak çikolata kaplama."
+        },
+        {
+            id: 5,
+            ad: "Beyaz Çikolatalı Ekler",
+            kategori: "ekler",
+            kategoriAd: "Ekler",
+            fiyat: 190,
+            sepetAd: "Beyaz Çikolatalı Ekler (4 Adet)",
+            rozet: "Yeni",
+            rozetTip: "yeni",
+            resim: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+            aciklama: "Beyaz çikolata kaplamalı kremalı ekler. 4 adet.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta", "Soya"],
+            icerikNot: "Kadifemsi krema dolgusu ve tatlı beyaz çikolata kaplama ile 4'lü kutu."
+        },
+        {
+            id: 6,
+            ad: "Profiterol",
+            kategori: "sutlu",
+            kategoriAd: "Sütlü Tatlılar",
+            fiyat: 290,
+            rozet: "Şefin Seçimi",
+            rozetTip: "populer",
+            resim: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600",
+            aciklama: "İçi krema dolgulu, yoğun çikolata soslu tatlı.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Hafif kremalı profiterol topları ve sıcak/soğuk servis edilebilen yoğun çikolata sosu."
+        },
+        {
+            id: 7,
+            ad: "Çilekli Magnolia",
+            kategori: "sutlu",
+            kategoriAd: "Sütlü Tatlılar",
+            fiyat: 290,
+            resim: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=600",
+            aciklama: "Sütlü krema, bisküvi ve taze çilek.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Özel sütlü muhallebi, çıtır bebe bisküvisi katmanları ve taze çilek dilimleri."
+        },
+        {
+            id: 8,
+            ad: "Fırın Sütlaç",
+            kategori: "sutlu",
+            kategoriAd: "Sütlü Tatlılar",
+            fiyat: 250,
+            resim: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600",
+            aciklama: "Geleneksel usul hazırlanan fırın sütlaç.",
+            alerjenler: ["Süt Ürünü"],
+            icerikNot: "Kıvamlı süt, pirinç ve üzeri hafif karamelize edilmiş geleneksel fırın tatlısı."
+        },
+        {
+            id: 9,
+            ad: "Tiramisu",
+            kategori: "sutlu",
+            kategoriAd: "Sütlü Tatlılar",
+            fiyat: 280,
+            resim: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=600",
+            aciklama: "Kahve aromalı, yumuşacık İtalyan tatlısı.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Taze demlenmiş espresso ile ıslatılmış kedi dili bisküvi, mascarpone kreması ve kakao."
+        },
+        {
+            id: 10,
+            ad: "Brownie",
+            kategori: "cikolatali",
+            kategoriAd: "Çikolatalı",
+            fiyat: 250,
+            resim: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600",
+            aciklama: "Yoğun çikolatalı, içi nemli ve yumuşak brownie.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta", "Fındık / Kuruyemiş"],
+            icerikNot: "Yüksek kakao oranlı çikolata, tereyağı ve hafif ceviz/fındık dokusu."
+        },
+        {
+            id: 11,
+            ad: "Çikolatalı Donut",
+            kategori: "cikolatali",
+            kategoriAd: "Çikolatalı",
+            fiyat: 120,
+            resim: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=600",
+            aciklama: "Çikolata kaplamalı, yumuşak donut.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Pofuduk mayalı hamur ve üzeri lezzetli çikolata sırlı donut."
+        },
+        {
+            id: 12,
+            ad: "Çilekli Tart",
+            kategori: "meyveli",
+            kategoriAd: "Meyveli",
+            fiyat: 260,
+            resim: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600",
+            aciklama: "Taze çileklerle süslenmiş meyveli tart.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Kıyır tart tabanı, pastacı kreması ve parlak taze çilekler."
+        },
+        {
+            id: 13,
+            ad: "Frambuazlı Cheesecake",
+            kategori: "meyveli",
+            kategoriAd: "Meyveli",
+            fiyat: 300,
+            rozet: "Çok Satan",
+            rozetTip: "populer",
+            resim: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=600",
+            aciklama: "Frambuaz soslu, kremamsı cheesecake.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Bisküvi taban, pürüzsüz peynir kreması ve mayhoş taze frambuaz sos."
+        },
+        {
+            id: 14,
+            ad: "Limonlu Cheesecake",
+            kategori: "meyveli",
+            kategoriAd: "Meyveli",
+            fiyat: 290,
+            resim: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600",
+            aciklama: "Limon aromalı, ferah ve kremamsı cheesecake.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Taze limon kabuğu rendesi ve ferahlatıcı limon kremalı klasik cheesecake."
+        },
+        {
+            id: 15,
+            ad: "Damla Çikolatalı Cookie",
+            kategori: "kurabiye",
+            kategoriAd: "Kurabiyeler",
+            fiyat: 90,
+            resim: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600",
+            aciklama: "Bol çikolata parçacıklı kurabiye. 1 adet.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Kenarları hafif çıtır, ortası yumuşak, bol çikolata damlalı büyük boy kurabiye."
+        },
+        {
+            id: 16,
+            ad: "Renkli Makaron",
+            kategori: "kurabiye",
+            kategoriAd: "Kurabiyeler",
+            fiyat: 220,
+            sepetAd: "Renkli Makaron (6 Adet)",
+            resim: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600",
+            aciklama: "Çeşitli aromalarda Fransız makaronları. 6 adet.",
+            alerjenler: ["Fındık / Kuruyemiş", "Yumurta", "Süt Ürünü"],
+            icerikNot: "Badem unuyla hazırlanan kabuklar ve meyveli/çikolatalı ganaj dolgular (6 adet)."
+        },
+        {
+            id: 17,
+            ad: "Tereyağlı Kruvasan",
+            kategori: "hamur",
+            kategoriAd: "Hamur İşleri",
+            fiyat: 110,
+            resim: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600",
+            aciklama: "Kat kat, çıtır çıtır tereyağlı kruvasan.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta"],
+            icerikNot: "Gerçek tereyağı ile katmanlandırılmış, dışı altın sarısı çıtır Fransız kruvasanı."
+        },
+        {
+            id: 18,
+            ad: "Çikolatalı Kruvasan",
+            kategori: "hamur",
+            kategoriAd: "Hamur İşleri",
+            fiyat: 150,
+            resim: "https://images.unsplash.com/photo-1623334044303-241021148842?w=600",
+            aciklama: "Çikolata dolgulu, taze kruvasan.",
+            alerjenler: ["Glüten", "Süt Ürünü", "Yumurta", "Soya"],
+            icerikNot: "Kat kat tereyağlı hamur içerisinde eriyen çikolata dolgusu ile taze fırından."
+        }
+    ];
+
+    let aktifKategori = 'tum';
+    let sepet = [];
+
+    // Ürün Kartlarını Ekrana Basma
+    function urunleriRenderEt(liste) {
+        const container = document.getElementById('urun-container');
+        const bosMesaj = document.getElementById('sonuc-bulunamadi');
+        container.innerHTML = '';
+
+        if (liste.length === 0) {
+            bosMesaj.style.display = 'block';
+            return;
+        }
+        bosMesaj.style.display = 'none';
+
+        liste.forEach(urun => {
+            const kart = document.createElement('div');
+            kart.className = 'urun-kart';
+            kart.innerHTML = `
+                ${urun.rozet ? `<span class="rozet ${urun.rozetTip || ''}">${urun.rozet}</span>` : ''}
+                <div class="resim-kapsayici" onclick="urunModalAc(${urun.id})" title="Detay ve Alerjen Bilgisi Gör">
+                    <img src="${urun.resim}" alt="${urun.ad}">
+                    <span class="detay-ipucu"><i class="fa-solid fa-eye"></i> İncele</span>
+                </div>
+                <div class="urun-bilgi">
+                    <div>
+                        <h3 onclick="urunModalAc(${urun.id})">${urun.ad}</h3>
+                        <p>${urun.aciklama}</p>
+                    </div>
+                    <div class="kart-alt">
+                        <span class="urun-fiyat">${urun.fiyat.toLocaleString('tr-TR')} ₺</span>
+                        <button class="ekle-btn" onclick="sepeteEkle('${urun.sepetAd || urun.ad}', ${urun.fiyat})">
+                            <i class="fa-solid fa-plus"></i> Sepete Ekle
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(kart);
+        });
+    }
+
+    // Kategori, Arama ve Fiyat Sıralama
+    const katButonlari = document.querySelectorAll('.kat-btn');
+    const aramaInput = document.getElementById('urun-arama');
+    const siralamaSelect = document.getElementById('fiyat-sirala');
+
+    katButonlari.forEach(btn => {
+        btn.addEventListener('click', () => {
+            katButonlari.forEach(b => b.classList.remove('aktif'));
+            btn.classList.add('aktif');
+            aktifKategori = btn.getAttribute('data-kategori');
+            urunleriFiltreleVeSirala();
+        });
+    });
+
+    aramaInput.addEventListener('input', urunleriFiltreleVeSirala);
+
+    function urunleriFiltreleVeSirala() {
+        const aranan = aramaInput.value.toLowerCase().trim();
+        const siralama = siralamaSelect.value;
+
+        let filtrelenmis = URUNLER.filter(urun => {
+            const kategoriUygun = aktifKategori === 'tum' || urun.kategori === aktifKategori;
+            const aramaUygun =
+                urun.ad.toLowerCase().includes(aranan) ||
+                urun.aciklama.toLowerCase().includes(aranan) ||
+                urun.kategoriAd.toLowerCase().includes(aranan);
+            return kategoriUygun && aramaUygun;
+        });
+
+        if (siralama === 'artan') {
+            filtrelenmis.sort((a, b) => a.fiyat - b.fiyat);
+        } else if (siralama === 'azalan') {
+            filtrelenmis.sort((a, b) => b.fiyat - a.fiyat);
+        }
+
+        urunleriRenderEt(filtrelenmis);
+    }
+
+    // Ürün Detay & Alerjen Modalı
+    function urunModalAc(id) {
+        const urun = URUNLER.find(u => u.id === id);
+        if (!urun) return;
+
+        document.getElementById('modal-resim').src = urun.resim;
+        document.getElementById('modal-resim').alt = urun.ad;
+        document.getElementById('modal-rozet').innerText = urun.kategoriAd;
+        document.getElementById('modal-baslik').innerText = urun.ad;
+        document.getElementById('modal-aciklama').innerText = urun.aciklama;
+        document.getElementById('modal-fiyat').innerText = urun.fiyat.toLocaleString('tr-TR') + ' ₺';
+        document.getElementById('modal-icerik-not').innerText = urun.icerikNot;
+
+        const alerjenKutusu = document.getElementById('modal-alerjenler');
+        alerjenKutusu.innerHTML = urun.alerjenler
+            .map(a => `<span class="alerjen-etiket"><i class="fa-solid fa-wheat-awn-circle-exclamation"></i> ${a}</span>`)
+            .join('');
+
+        const modalEkleBtn = document.getElementById('modal-sepete-ekle');
+        modalEkleBtn.onclick = () => {
+            sepeteEkle(urun.sepetAd || urun.ad, urun.fiyat);
+            urunModalKapat();
+        };
+
+        document.getElementById('urun-modal').classList.add('acik');
+        document.getElementById('urun-modal-arkaplan').classList.add('acik');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function urunModalKapat() {
+        document.getElementById('urun-modal').classList.remove('acik');
+        document.getElementById('urun-modal-arkaplan').classList.remove('acik');
+        document.body.style.overflow = '';
+    }
+
+    // Mobil Hamburger Menü
+    function mobilMenuAcKapat() {
+        const menu = document.getElementById('ana-menu');
+        const ikon = document.querySelector('#hamburger-btn i');
+        menu.classList.toggle('mobil-acik');
+
+        if (menu.classList.contains('mobil-acik')) {
+            ikon.classList.replace('fa-bars', 'fa-xmark');
+        } else {
+            ikon.classList.replace('fa-xmark', 'fa-bars');
+        }
+    }
+
+    function mobilMenuKapat() {
+        const menu = document.getElementById('ana-menu');
+        const ikon = document.querySelector('#hamburger-btn i');
+        menu.classList.remove('mobil-acik');
+        if (ikon) ikon.classList.replace('fa-xmark', 'fa-bars');
+    }
+
+    // Sayfa Başına Dön Butonu
+    const yukariBtn = document.getElementById('yukari-cik-btn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 350) {
+            yukariBtn.classList.add('gorunur');
+        } else {
+            yukariBtn.classList.remove('gorunur');
+        }
+    });
+
+    function sayfaBasinaDon() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Şube Açık / Kapalı Durum Göstergesi (08:30 - 23:00)
+    function subeDurumuGuncelle() {
+        const simdi = new Date();
+        const dakikaToplam = simdi.getHours() * 60 + simdi.getMinutes();
+        const acilis = 8 * 60 + 30;  // 08:30
+        const kapanis = 23 * 60;      // 23:00
+        const acikMi = dakikaToplam >= acilis && dakikaToplam < kapanis;
+
+        const headerRozet = document.getElementById('canli-durum-rozet');
+        const subeEtiketleri = document.querySelectorAll('.sube-durum-etiket');
+
+        if (acikMi) {
+            headerRozet.textContent = '● Şubeler Açık';
+            headerRozet.className = 'durum-rozet acik';
+            subeEtiketleri.forEach(el => {
+                el.textContent = 'Şu An Açık';
+                el.className = 'sube-durum-etiket acik';
+            });
+        } else {
+            headerRozet.textContent = '● Kapalı (08:30)';
+            headerRozet.className = 'durum-rozet kapali';
+            subeEtiketleri.forEach(el => {
+                el.textContent = 'Şu An Kapalı';
+                el.className = 'sube-durum-etiket kapali';
+            });
+        }
+    }
+
+    // Sepet İşlemleri
+    function sepetAcKapat() {
+        document.getElementById('sepet-panel').classList.toggle('acik');
+        document.getElementById('sepet-arkaplan').classList.toggle('acik');
+    }
+
+    function sepeteEkle(ad, fiyat) {
+        const mevcut = sepet.find(item => item.ad === ad);
+        if (mevcut) {
+            mevcut.adet++;
+        } else {
+            sepet.push({ ad, fiyat, adet: 1 });
+        }
+        sepetiGuncelle();
+        toastGoster(`${ad} sepete eklendi!`);
+    }
+
+    function adetDegistir(index, degisim) {
+        sepet[index].adet += degisim;
+        if (sepet[index].adet <= 0) {
+            sepet.splice(index, 1);
+        }
+        sepetiGuncelle();
+    }
+
+    function sepetiGuncelle() {
+        const icerik = document.getElementById('sepet-icerik');
+        const sayac = document.getElementById('sepet-sayac');
+        const toplamEl = document.getElementById('sepet-toplam');
+
+        let toplamAdet = 0;
+        let toplamFiyat = 0;
+
+        if (sepet.length === 0) {
+            icerik.innerHTML = '<p class="bos-sepet">Sepetiniz şu an boş. Lezzetli tatlılarımızdan eklemeye başlayın!</p>';
+            sayac.innerText = '0';
+            toplamEl.innerText = '0 ₺';
+            return;
+        }
+
+        icerik.innerHTML = '';
+        sepet.forEach((urun, index) => {
+            toplamAdet += urun.adet;
+            toplamFiyat += urun.fiyat * urun.adet;
+
+            icerik.innerHTML += `
+                <div class="sepet-oge">
+                    <div>
+                        <h4>${urun.ad}</h4>
+                        <span>${urun.fiyat.toLocaleString('tr-TR')} ₺</span>
+                    </div>
+                    <div class="adet-kontrol">
+                        <button onclick="adetDegistir(${index}, -1)" aria-label="Adet Azalt">-</button>
+                        <span>${urun.adet}</span>
+                        <button onclick="adetDegistir(${index}, 1)" aria-label="Adet Artır">+</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        sayac.innerText = toplamAdet;
+        toplamEl.innerText = toplamFiyat.toLocaleString('tr-TR') + ' ₺';
+    }
+
+    function whatsappSiparisVer() {
+        if (sepet.length === 0) {
+            toastGoster('Lütfen önce sepetinize ürün ekleyin.');
+            return;
+        }
+        let mesaj = "Merhaba Pastacı! Web siteniz üzerinden sipariş vermek istiyorum:%0A%0A";
+        let toplam = 0;
+        sepet.forEach(u => {
+            mesaj += `• ${u.ad} (${u.adet} adet) - ${(u.fiyat * u.adet).toLocaleString('tr-TR')} ₺%0A`;
+            toplam += u.fiyat * u.adet;
+        });
+        mesaj += `%0A*Toplam Tutar: ${toplam.toLocaleString('tr-TR')} ₺*`;
+        window.open(`https://wa.me/905550000000?text=${mesaj}`, '_blank');
+    }
+
+    function ozelSiparisGonder(e) {
+        e.preventDefault();
+        const ad = document.getElementById('musteri-ad').value;
+        const tel = document.getElementById('musteri-tel').value;
+        const tip = document.getElementById('pasta-tipi').value;
+        const not = document.getElementById('pasta-not').value;
+
+        const mesaj = `Merhaba Pastacı! Özel sipariş talebim var:%0A%0A*Ad Soyad:* ${ad}%0A*Telefon:* ${tel}%0A*Kategori:* ${tip}%0A*Detay:* ${not}`;
+        window.open(`https://wa.me/905550000000?text=${mesaj}`, '_blank');
+    }
+
+    function toastGoster(metin) {
+        const toast = document.getElementById('toast');
+        toast.innerText = metin;
+        toast.classList.add('goster');
+        setTimeout(() => toast.classList.remove('goster'), 2500);
+    }
+
+    // ESC tuşu ile modal kapatma
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            urunModalKapat();
+            mobilMenuKapat();
+        }
+    });
+
+    // Başlangıç
+    urunleriRenderEt(URUNLER);
+    subeDurumuGuncelle();
+    setInterval(subeDurumuGuncelle, 60000);
+</script>
+
+</body>
+</html>
